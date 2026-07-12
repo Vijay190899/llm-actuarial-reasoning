@@ -179,14 +179,22 @@ def oai_generate(prompt, model, provider="openrouter", temperature=0.8, max_toke
     ck = cache_key({"provider": provider, **payload})
     cf = CACHE / f"{provider}_{ck}.json"
     if cf.exists():
-        return json.loads(cf.read_text(encoding="utf-8"))["choices"][0]["message"]["content"]
+        cached = json.loads(cf.read_text(encoding="utf-8"))
+        if "choices" in cached:                     # only trust well-formed cached bodies
+            return cached["choices"][0]["message"]["content"]
+        cf.unlink()                                 # drop a stale error envelope and refetch
 
     headers = {"Authorization": f"Bearer {_key_for(env_name)}"}
     for attempt in range(max_retries):
         r = requests.post(url, json=payload, headers=headers, timeout=120)
         if r.status_code == 200:
             data = r.json()
-            atomic_write(cf, json.dumps(data))
+            if "choices" not in data:               # provider returned an error body with HTTP 200
+                emsg = json.dumps(data.get("error", data))[:200]
+                if attempt < max_retries - 1:
+                    time.sleep(min(2 ** attempt * 2, 20)); continue
+                raise RuntimeError(f"{provider}/{model} 200-but-no-choices: {emsg}")
+            atomic_write(cf, json.dumps(data))       # cache only well-formed responses
             return data["choices"][0]["message"]["content"]
         if r.status_code == 429:
             # free-tier per-minute limit; short backoff (daily cap surfaces as persistent 429)

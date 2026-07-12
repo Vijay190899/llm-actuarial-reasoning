@@ -20,6 +20,14 @@ from common import SUMMARIES, atomic_write
 
 warnings.filterwarnings("ignore")
 RNG = np.random.default_rng(0)
+N_MATCH = 100  # subsample every table to a common size so features are not confounded by n (D1)
+
+
+def match_n(v):
+    v = np.asarray(v, float)
+    if len(v) > N_MATCH:
+        return v[RNG.choice(len(v), N_MATCH, replace=False)]
+    return v
 
 
 def _tables_from_frame(df, source, max_cols=12):
@@ -66,7 +74,7 @@ def main():
     records = []
     for name, v, domain in tables:
         elig = bool(dt.is_benford_eligible(v))
-        feats = dt.features(v)
+        feats = dt.features(match_n(v))  # features at matched n (D1)
         if feats.get("insufficient"):
             continue
         records.append({"table": name, "domain": domain, "benford_eligible": elig,

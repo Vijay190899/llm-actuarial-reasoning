@@ -88,19 +88,28 @@ def features(x, min_n=30):
         ent = -np.sum(pl[pl > 0] * np.log2(pl[pl > 0]))
     f["lastdigit_entropy_bits"] = float(ent)
 
-    # Mantissa uniformity: Benford <=> log10 mantissa ~ Uniform(0,1). KS test.
+    # Mantissa uniformity: Benford <=> log10 mantissa ~ Uniform(0,1).
+    # Keep the KS p-value for reference, but the DETECTOR uses mantissa_mad,
+    # a sample-size-robust effect size (p-values scale with n and would let the
+    # detector cheat on table size instead of on fabrication).
     mant = np.log10(x) % 1.0
     f["mantissa_ks_p"] = float(stats.kstest(mant, "uniform").pvalue)
+    mhist, _ = np.histogram(mant, bins=10, range=(0.0, 1.0))
+    f["mantissa_mad"] = float(np.mean(np.abs(mhist / mhist.sum() - 0.1)))
 
-    # Unique-value ratio (fabrication often repeats "nice" values)
+    # Unique-value ratio (fabrication often repeats "nice" values).
+    # Only comparable across tables when n is held fixed (see N_MATCH in callers).
     f["unique_ratio"] = float(len(np.unique(xi)) / n)
     return f
 
 
+# Detector features: all sample-size robust (proportions, entropies, MADs).
+# p-value features are computed above for reference but excluded here so the
+# detector cannot separate tables by their size (D1).
 FEATURE_KEYS = [
-    "benford_mad", "benford_chi2_p", "second_digit_chi2_p",
-    "lastdigit_chi2_p", "lastdigit_mad", "round_end0_rate", "round_end00_rate",
-    "round_5or0_rate", "lastdigit_entropy_bits", "mantissa_ks_p", "unique_ratio",
+    "benford_mad", "lastdigit_mad", "lastdigit_entropy_bits",
+    "round_end0_rate", "round_end00_rate", "round_5or0_rate",
+    "mantissa_mad", "unique_ratio",
 ]
 
 

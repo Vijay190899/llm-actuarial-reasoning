@@ -1,0 +1,108 @@
+{
+ "n_real": 32,
+ "n_fab": 75,
+ "refusal_rate_by_cell": {
+  "small_open:C0": 0.25,
+  "small_open:C1": 0.0,
+  "small_open:C2": 0.25,
+  "small_open:C3": 0.75,
+  "large_open:C0": 0.0,
+  "large_open:C1": 0.0,
+  "large_open:C2": 0.0,
+  "large_open:C3": 0.0,
+  "deepseek:C0": 0.0,
+  "deepseek:C1": 0.0,
+  "deepseek:C2": 0.0,
+  "deepseek:C3": 0.0,
+  "gemini:C0": 0.0,
+  "gemini:C1": 0.0,
+  "gemini:C2": 0.0,
+  "gemini:C3": 0.0,
+  "frontier:C0": 0.0,
+  "frontier:C1": 0.0,
+  "frontier:C2": 0.0,
+  "frontier:C3": 0.0
+ },
+ "n_refusals": 5,
+ "per_test_auc_all": {
+  "unique_ratio": 0.809,
+  "round_end00_rate": 0.681,
+  "mantissa_mad": 0.654,
+  "round_end0_rate": 0.629,
+  "round_5or0_rate": 0.626,
+  "benford_mad": 0.613,
+  "lastdigit_entropy_bits": 0.579,
+  "lastdigit_mad": 0.555
+ },
+ "per_test_auc_open_only": {
+  "unique_ratio": 0.774,
+  "lastdigit_mad": 0.617,
+  "round_end0_rate": 0.595,
+  "lastdigit_entropy_bits": 0.575,
+  "round_5or0_rate": 0.573,
+  "benford_mad": 0.53,
+  "round_end00_rate": 0.524,
+  "mantissa_mad": 0.517
+ },
+ "best_terminal_auc_open": 0.617,
+ "composite_auc_all": 0.747,
+ "frontier_survival": {
+  "frontier": {
+   "n": 8,
+   "lastdigit_entropy": 1.457,
+   "real_entropy": 2.711,
+   "entropy_gap": 1.254,
+   "round_end0_rate": 0.609,
+   "real_end0": 0.118,
+   "end0_gap": 0.491,
+   "signal_present": true
+  },
+  "deepseek": {
+   "n": 8,
+   "lastdigit_entropy": 1.086,
+   "real_entropy": 2.711,
+   "entropy_gap": 1.624,
+   "round_end0_rate": 0.72,
+   "real_end0": 0.118,
+   "end0_gap": 0.602,
+   "signal_present": true
+  },
+  "gemini": {
+   "n": 8,
+   "lastdigit_entropy": 2.014,
+   "real_entropy": 2.711,
+   "entropy_gap": 0.696,
+   "round_end0_rate": 0.436,
+   "real_end0": 0.118,
+   "end0_gap": 0.319,
+   "signal_present": true
+  }
+ },
+ "evasion_by_condition": {
+  "C0": {
+   "n": 19,
+   "firstdigit_benford_auc": 0.671,
+   "composite_mean_score": 0.796
+  },
+  "C1": {
+   "n": 20,
+   "firstdigit_benford_auc": 0.685,
+   "composite_mean_score": 0.767
+  },
+  "C2": {
+   "n": 19,
+   "firstdigit_benford_auc": 0.539,
+   "composite_mean_score": 0.752
+  },
+  "C3": {
+   "n": 17,
+   "firstdigit_benford_auc": 0.634,
+   "composite_mean_score": 0.778
+  }
+ },
+ "gates": {
+  "G_signal_open>=0.80": false,
+  "G_frontier_signal_survives": true,
+  "G_evasion_real": true
+ }
+}
