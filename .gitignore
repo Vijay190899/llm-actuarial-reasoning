@@ -1,0 +1,26 @@
+# Secrets (never commit)
+.env
+*.key
+
+# Python
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Large or transient run artifacts
+results/cache/
+results/raw/
+data/
+
+# Local harness config (kept out of the research repo)
+
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep: experiments/, brain/, results/summaries/, paper/, council/, docs
+!results/summaries/
