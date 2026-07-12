@@ -1,41 +1,40 @@
-# Digit Forensics for LLM-Fabricated Numeric Tables
+# Diagnostic Evaluation of Frontier LLM Actuarial Calculation
 
-A study of whether simple, training-free digit-distribution tests can flag numeric data tables that were fabricated by language models, and how easily a model can be prompted to evade those tests.
+A study of not just whether frontier language models get actuarial calculations right, but where and why they break, how consistent they are when the same case is reworded, and whether a simple intervention helps.
 
 ## Question
 
-Classical forensic accounting uses digit tests to spot invented numbers. First-digit tests follow Benford's law, and terminal-digit tests expect the last digits of genuine measurement data to be close to uniform. This project asks three things:
+Two 2026 benchmarks measure LLM actuarial accuracy. This project adds the diagnostic layer they lack:
 
-1. Do tables fabricated by language models deviate from these expectations more than real-world data does, and by how much.
-2. Which test carries the signal. The hypothesis is that terminal-digit structure separates fabricated from real tables better than the well-known first-digit test.
-3. Whether a model told to satisfy Benford's law, or to flatten its terminal digits, can defeat the tests, and whether a combined detector still holds.
+1. Accuracy on core actuarial calculations (annuities, life contingencies, premiums), by model.
+2. Error-mechanism localization: on a multi-step problem, which step is the first to go wrong, and is it a conceptual error (for example confusing annuity-in-advance with annuity-in-arrears) or an arithmetic slip.
+3. Self-consistency: does the same problem, validly reworded, produce the same answer.
+4. Mitigation: does a structured solution scaffold reduce the dominant error class.
 
-## Status
+## Why the ground truth is trustworthy
 
-Pilot stage. The real-data corpus and the digit-test module are built and checked. The fabrication run across the model set is gated: it expands to the full sample only if the pilot meets pre-registered criteria recorded in `brain/REDTEAM.md`.
-
-## Model set
-
-Two open models with published parameter counts (Llama 3.2 3B and Llama 3.3 70B) and three consumer frontier models (DeepSeek V3.1, Gemini 2.5 Flash, a frontier model). All are reached through a single OpenRouter key. Each model fabricates tables under four prompt conditions: plain, realistic, first-digit evasion, and terminal-digit evasion.
+Problems are procedurally generated with randomized parameters, so the exact items are not in any training set. Every answer and every intermediate quantity is computed in code. The engine reproduces the published Standard Ultimate Life Table and the exact actuarial identities before any model is called, so the reference values are correct by construction rather than by assertion.
 
 ## Layout
 
-- `experiments/` runnable scripts. `digit_tests.py` computes the forensic features, `load_real.py` builds the real corpus, `fabricate.py` generates fabricated tables, `detect.py` scores real against fabricated.
-- `results/summaries/` machine-readable result files. Every number reported in the paper traces back to one of these.
-- `brain/` project notes: state, decisions, findings, questions, and the red-team log.
+- `experiments/actuarial_gen.py` the validated actuarial engine (Makeham Standard Ultimate Life Table, interest and life-contingent functions). Run it to see the ground-truth validation checks.
+- `experiments/actuarial_problems.py` problem instances with code-computed answers, labelled anchor steps, reworded variants, and a mitigation scaffold.
+- `experiments/actuarial_eval.py` runs models, grades final answers, localizes the first wrong step, and measures consistency.
+- `experiments/common.py` cached calls to an OpenAI-compatible endpoint (OpenRouter).
+- `results/summaries/` machine-readable results. Every number reported traces back to one of these.
+- `brain/` project notes: state, decisions, findings, and the red-team log.
 - `experiment_design.md`, `council_protocol.md`, `pivot_ladder.md` the plan, the review protocol, and the roadblock policy.
-- `paper/` the manuscript.
 
 ## Reproducibility
 
-Every model response is cached on disk by a hash of the request, so reruns cost nothing and reproduce the same tables. Exact model identifiers and run dates are recorded with the results. API keys live in a local `.env` file that is never committed.
+Model responses are cached by a hash of the request, so reruns are free and reproduce the same outputs. Model identifiers and run dates are recorded with the results. API keys live in a local `.env` file that is never committed.
 
 ## Setup
 
-Create a `.env` file in this folder with your OpenRouter key:
+Create a `.env` file in this folder with your key:
 
 ```
 OPENROUTER_API_KEY=your_key_here
 ```
 
-Then run the scripts from `experiments/` using the project virtual environment.
+Then run the scripts from `experiments/` using the project virtual environment. Start with `python actuarial_gen.py` to confirm the ground-truth validation passes.
