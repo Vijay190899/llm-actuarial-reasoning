@@ -73,12 +73,18 @@ def run(model_keys, n_per_family, out):
                     txt = oai_generate(prompt, model, temperature=0.3, max_tokens=1200)
                 except DailyCapError as e:
                     print("cap:", e); continue
+                if not isinstance(txt, str) or not txt.strip():
+                    refusals += 1; continue
                 fa = final_answer(txt)
                 if fa is None:
                     refusals += 1; continue
                 correct = matches(fa, p["answer"])
                 fw, nfound = localize(txt, p["anchors"])
-                if nfound >= 1:
+                # KC1 = did the model SHOW parseable working (numbers beyond the final),
+                # so a first-divergence step can be identified? This is parse-ability,
+                # not correctness (a wrong-but-shown answer is still localizable).
+                shows_work = len(nums(txt)) >= 3
+                if shows_work:
                     extractable += 1
                 recs.append({"model": mk, "family": p["family"], "prob": pi, "cond": cond,
                              "final": fa, "answer": p["answer"], "correct": bool(correct),
