@@ -26,26 +26,38 @@
  "n_refusals": 5,
  "per_test_auc_all": {
   "unique_ratio": 0.809,
+  "modal_share": 0.807,
   "round_end00_rate": 0.681,
   "mantissa_mad": 0.654,
   "round_end0_rate": 0.629,
   "round_5or0_rate": 0.626,
+  "benford_f2d_mad": 0.624,
+  "trailing_zero_mean": 0.624,
   "benford_mad": 0.613,
   "lastdigit_entropy_bits": 0.579,
-  "lastdigit_mad": 0.555
+  "lastdigit_mad": 0.555,
+  "decimal_places_entropy": 0.555,
+  "lasttwo_mad": 0.522,
+  "int_fraction": 0.509
  },
  "per_test_auc_open_only": {
+  "modal_share": 0.779,
   "unique_ratio": 0.774,
+  "lasttwo_mad": 0.67,
   "lastdigit_mad": 0.617,
+  "trailing_zero_mean": 0.601,
+  "decimal_places_entropy": 0.596,
   "round_end0_rate": 0.595,
+  "benford_f2d_mad": 0.58,
   "lastdigit_entropy_bits": 0.575,
   "round_5or0_rate": 0.573,
   "benford_mad": 0.53,
   "round_end00_rate": 0.524,
-  "mantissa_mad": 0.517
+  "mantissa_mad": 0.517,
+  "int_fraction": 0.507
  },
  "best_terminal_auc_open": 0.617,
- "composite_auc_all": 0.747,
+ "composite_auc_all": 0.896,
  "frontier_survival": {
   "frontier": {
    "n": 8,
@@ -82,22 +94,22 @@
   "C0": {
    "n": 19,
    "firstdigit_benford_auc": 0.671,
-   "composite_mean_score": 0.796
+   "composite_mean_score": 0.86
   },
   "C1": {
    "n": 20,
    "firstdigit_benford_auc": 0.685,
-   "composite_mean_score": 0.767
+   "composite_mean_score": 0.831
   },
   "C2": {
    "n": 19,
    "firstdigit_benford_auc": 0.539,
-   "composite_mean_score": 0.752
+   "composite_mean_score": 0.764
   },
   "C3": {
    "n": 17,
    "firstdigit_benford_auc": 0.634,
-   "composite_mean_score": 0.778
+   "composite_mean_score": 0.829
   }
  },
  "gates": {

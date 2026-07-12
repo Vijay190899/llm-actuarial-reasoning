@@ -100,6 +100,48 @@ def features(x, min_n=30):
     # Unique-value ratio (fabrication often repeats "nice" values).
     # Only comparable across tables when n is held fixed (see N_MATCH in callers).
     f["unique_ratio"] = float(len(np.unique(xi)) / n)
+
+    # --- richer size-robust tells of fabrication ---
+    # First-two-digit Benford (more resolution than first digit alone)
+    norm = x / 10 ** np.floor(np.log10(x))
+    f2 = np.clip((norm * 10).astype(int), 10, 99)
+    obs_f2 = np.array([(f2 == d).sum() for d in range(10, 100)], float)
+    p_f2 = obs_f2 / obs_f2.sum()
+    ben_f2 = np.array([np.log10(1 + 1 / d) for d in range(10, 100)])
+    f["benford_f2d_mad"] = float(np.mean(np.abs(p_f2 - ben_f2)))
+
+    # Last-two-digit uniformity (genuine terminal pairs are ~uniform over 00..99)
+    lt = xi % 100
+    obs_lt = np.bincount(lt, minlength=100).astype(float)
+    f["lasttwo_mad"] = float(np.mean(np.abs(obs_lt / obs_lt.sum() - 0.01)))
+
+    # Trailing-zero structure: heaping produces more trailing zeros per value
+    def _tz(v):
+        v = int(abs(v))
+        if v == 0:
+            return 1
+        c = 0
+        while v % 10 == 0:
+            c += 1; v //= 10
+        return c
+    f["trailing_zero_mean"] = float(np.mean([_tz(v) for v in xi]))
+
+    # Numeric precision: fraction that are exact integers, and entropy of decimal places
+    is_int = np.isclose(x, np.round(x), atol=1e-9)
+    f["int_fraction"] = float(np.mean(is_int))
+    def _dp(v):
+        for k in range(0, 7):
+            if abs(round(v, k) - v) < 1e-9 * max(1.0, abs(v)):
+                return k
+        return 7
+    dps = np.array([_dp(v) for v in x])
+    dp_hist = np.bincount(dps, minlength=8).astype(float)
+    p_dp = dp_hist / dp_hist.sum()
+    with np.errstate(divide="ignore"):
+        f["decimal_places_entropy"] = float(-np.sum(p_dp[p_dp > 0] * np.log2(p_dp[p_dp > 0])))
+
+    # Modal share: fraction of values equal to the single most common value
+    f["modal_share"] = float(np.max(np.bincount(np.searchsorted(np.unique(xi), xi))) / n)
     return f
 
 
@@ -107,9 +149,10 @@ def features(x, min_n=30):
 # p-value features are computed above for reference but excluded here so the
 # detector cannot separate tables by their size (D1).
 FEATURE_KEYS = [
-    "benford_mad", "lastdigit_mad", "lastdigit_entropy_bits",
-    "round_end0_rate", "round_end00_rate", "round_5or0_rate",
-    "mantissa_mad", "unique_ratio",
+    "benford_mad", "benford_f2d_mad", "lastdigit_mad", "lastdigit_entropy_bits",
+    "lasttwo_mad", "round_end0_rate", "round_end00_rate", "round_5or0_rate",
+    "trailing_zero_mean", "mantissa_mad", "unique_ratio", "modal_share",
+    "int_fraction", "decimal_places_entropy",
 ]
 
 

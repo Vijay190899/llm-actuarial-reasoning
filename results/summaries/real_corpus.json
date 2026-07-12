@@ -36,7 +36,13 @@
     "lastdigit_entropy_bits": 2.5877223251908026,
     "mantissa_ks_p": 0.000932978551248409,
     "mantissa_mad": 0.06,
-    "unique_ratio": 0.09
+    "unique_ratio": 0.09,
+    "benford_f2d_mad": 0.00990534605191104,
+    "lasttwo_mad": 0.018200000000000004,
+    "trailing_zero_mean": 0.0,
+    "int_fraction": 0.0,
+    "decimal_places_entropy": 0.85847073649916,
+    "modal_share": 0.22
    }
   },
   {
@@ -58,7 +64,13 @@
     "lastdigit_entropy_bits": 3.2240109109992274,
     "mantissa_ks_p": 9.983141096986953e-06,
     "mantissa_mad": 0.06000000000000001,
-    "unique_ratio": 0.41
+    "unique_ratio": 0.41,
+    "benford_f2d_mad": 0.010542583805254491,
+    "lasttwo_mad": 0.011800000000000001,
+    "trailing_zero_mean": 0.06,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.07
    }
   },
   {
@@ -80,7 +92,13 @@
     "lastdigit_entropy_bits": 2.3217272570456906,
     "mantissa_ks_p": 8.035599077198002e-23,
     "mantissa_mad": 0.11200000000000002,
-    "unique_ratio": 0.1
+    "unique_ratio": 0.1,
+    "benford_f2d_mad": 0.013915926232008016,
+    "lasttwo_mad": 0.018000000000000002,
+    "trailing_zero_mean": 0.0,
+    "int_fraction": 0.0,
+    "decimal_places_entropy": 0.28229218908241477,
+    "modal_share": 0.38
    }
   },
   {
@@ -102,7 +120,13 @@
     "lastdigit_entropy_bits": 0.08079313589591118,
     "mantissa_ks_p": 2.2325123165794686e-49,
     "mantissa_mad": 0.156,
-    "unique_ratio": 0.02
+    "unique_ratio": 0.02,
+    "benford_f2d_mad": 0.019095593389029112,
+    "lasttwo_mad": 0.0196,
+    "trailing_zero_mean": 0.0,
+    "int_fraction": 0.03,
+    "decimal_places_entropy": 0.41499379417611093,
+    "modal_share": 0.99
    }
   },
   {
@@ -124,7 +148,13 @@
     "lastdigit_entropy_bits": 3.3030930248800763,
     "mantissa_ks_p": 0.11285311019204669,
     "mantissa_mad": 0.04,
-    "unique_ratio": 0.97
+    "unique_ratio": 0.97,
+    "benford_f2d_mad": 0.008116116636438273,
+    "lasttwo_mad": 0.006400000000000001,
+    "trailing_zero_mean": 0.12,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.02
    }
   },
   {
@@ -146,7 +176,13 @@
     "lastdigit_entropy_bits": 1.5268116949990476,
     "mantissa_ks_p": 1.1748831750735113e-09,
     "mantissa_mad": 0.10999999999999999,
-    "unique_ratio": 0.05
+    "unique_ratio": 0.05,
+    "benford_f2d_mad": 0.014001130409837238,
+    "lasttwo_mad": 0.019000000000000003,
+    "trailing_zero_mean": 0.0,
+    "int_fraction": 0.0,
+    "decimal_places_entropy": 0.16144054254182066,
+    "modal_share": 0.62
    }
   },
   {
@@ -168,7 +204,13 @@
     "lastdigit_entropy_bits": 2.3406981227490586,
     "mantissa_ks_p": 4.517976660889595e-25,
     "mantissa_mad": 0.17,
-    "unique_ratio": 0.09
+    "unique_ratio": 0.09,
+    "benford_f2d_mad": 0.01963025568670297,
+    "lasttwo_mad": 0.018200000000000004,
+    "trailing_zero_mean": 0.01,
+    "int_fraction": 0.01,
+    "decimal_places_entropy": 0.5158951529482092,
+    "modal_share": 0.48
    }
   },
   {
@@ -190,7 +232,13 @@
     "lastdigit_entropy_bits": 2.1556339748008306,
     "mantissa_ks_p": 0.033775129406852566,
     "mantissa_mad": 0.03,
-    "unique_ratio": 0.05
+    "unique_ratio": 0.05,
+    "benford_f2d_mad": 0.00906600543963724,
+    "lasttwo_mad": 0.019000000000000003,
+    "trailing_zero_mean": 0.0,
+    "int_fraction": 0.06,
+    "decimal_places_entropy": 0.9501260679377934,
+    "modal_share": 0.35
    }
   },
   {
@@ -212,7 +260,13 @@
     "lastdigit_entropy_bits": 3.2718888530634986,
     "mantissa_ks_p": 1.6838183910555126e-06,
     "mantissa_mad": 0.08199999999999999,
-    "unique_ratio": 0.44
+    "unique_ratio": 0.44,
+    "benford_f2d_mad": 0.011559176138031204,
+    "lasttwo_mad": 0.011200000000000002,
+    "trailing_zero_mean": 0.14,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.06
    }
   },
   {
@@ -234,7 +288,13 @@
     "lastdigit_entropy_bits": 3.2541753420551096,
     "mantissa_ks_p": 0.0023034261739083295,
     "mantissa_mad": 0.046,
-    "unique_ratio": 1.0
+    "unique_ratio": 1.0,
+    "benford_f2d_mad": 0.00905299785688773,
+    "lasttwo_mad": 0.0078000000000000005,
+    "trailing_zero_mean": 0.07,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.01
    }
   },
   {
@@ -256,7 +316,13 @@
     "lastdigit_entropy_bits": 2.5983018138401413,
     "mantissa_ks_p": 1.7052182459571363e-14,
     "mantissa_mad": 0.11600000000000002,
-    "unique_ratio": 0.12
+    "unique_ratio": 0.12,
+    "benford_f2d_mad": 0.01746253337665385,
+    "lasttwo_mad": 0.0176,
+    "trailing_zero_mean": 0.22,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.31
    }
   },
   {
@@ -278,7 +344,13 @@
     "lastdigit_entropy_bits": 2.6640895542082728,
     "mantissa_ks_p": 0.027628532321986365,
     "mantissa_mad": 0.054000000000000006,
-    "unique_ratio": 0.35
+    "unique_ratio": 0.35,
+    "benford_f2d_mad": 0.015009775235639495,
+    "lasttwo_mad": 0.0134,
+    "trailing_zero_mean": 0.02,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.15
    }
   },
   {
@@ -300,7 +372,13 @@
     "lastdigit_entropy_bits": 3.072499932064718,
     "mantissa_ks_p": 1.7759367567752237e-31,
     "mantissa_mad": 0.12800000000000003,
-    "unique_ratio": 0.38
+    "unique_ratio": 0.38,
+    "benford_f2d_mad": 0.014920945625314654,
+    "lasttwo_mad": 0.013600000000000001,
+    "trailing_zero_mean": 0.12,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.15
    }
   },
   {
@@ -322,7 +400,13 @@
     "lastdigit_entropy_bits": 1.476843233369216,
     "mantissa_ks_p": 4.4618615521952925e-17,
     "mantissa_mad": 0.11000000000000001,
-    "unique_ratio": 0.23
+    "unique_ratio": 0.23,
+    "benford_f2d_mad": 0.017995116242018345,
+    "lasttwo_mad": 0.0154,
+    "trailing_zero_mean": 0.7,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.48
    }
   },
   {
@@ -344,7 +428,13 @@
     "lastdigit_entropy_bits": 3.1046162051359874,
     "mantissa_ks_p": 3.921924383021513e-05,
     "mantissa_mad": 0.06400000000000002,
-    "unique_ratio": 0.13
+    "unique_ratio": 0.13,
+    "benford_f2d_mad": 0.0184515718089582,
+    "lasttwo_mad": 0.017400000000000006,
+    "trailing_zero_mean": 0.01,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.22
    }
   },
   {
@@ -366,7 +456,13 @@
     "lastdigit_entropy_bits": 3.2869650342002674,
     "mantissa_ks_p": 2.2602578035025623e-15,
     "mantissa_mad": 0.11000000000000001,
-    "unique_ratio": 0.7
+    "unique_ratio": 0.7,
+    "benford_f2d_mad": 0.013475326714935097,
+    "lasttwo_mad": 0.0076,
+    "trailing_zero_mean": 0.15,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.04
    }
   },
   {
@@ -388,7 +484,13 @@
     "lastdigit_entropy_bits": 2.4714923950646996,
     "mantissa_ks_p": 1.189461738414742e-44,
     "mantissa_mad": 0.12999999999999998,
-    "unique_ratio": 0.31
+    "unique_ratio": 0.31,
+    "benford_f2d_mad": 0.01774596379011826,
+    "lasttwo_mad": 0.0138,
+    "trailing_zero_mean": 0.27,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.12
    }
   },
   {
@@ -410,7 +512,13 @@
     "lastdigit_entropy_bits": 3.2268828620810748,
     "mantissa_ks_p": 2.7319792978535907e-08,
     "mantissa_mad": 0.06999999999999999,
-    "unique_ratio": 0.38
+    "unique_ratio": 0.38,
+    "benford_f2d_mad": 0.01118041613558216,
+    "lasttwo_mad": 0.012400000000000001,
+    "trailing_zero_mean": 0.15,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.09
    }
   },
   {
@@ -432,7 +540,13 @@
     "lastdigit_entropy_bits": 2.8596811002310076,
     "mantissa_ks_p": 0.020097009781826713,
     "mantissa_mad": 0.026000000000000002,
-    "unique_ratio": 0.8
+    "unique_ratio": 0.8,
+    "benford_f2d_mad": 0.007503197180155804,
+    "lasttwo_mad": 0.0096,
+    "trailing_zero_mean": 0.32,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.03
    }
   },
   {
@@ -454,7 +568,13 @@
     "lastdigit_entropy_bits": 3.217146887853797,
     "mantissa_ks_p": 3.0733308613037585e-09,
     "mantissa_mad": 0.11800000000000002,
-    "unique_ratio": 0.3
+    "unique_ratio": 0.3,
+    "benford_f2d_mad": 0.01432709598392547,
+    "lasttwo_mad": 0.014000000000000004,
+    "trailing_zero_mean": 0.11,
+    "int_fraction": 0.06,
+    "decimal_places_entropy": 0.32744491915447627,
+    "modal_share": 0.09
    }
   },
   {
@@ -476,7 +596,13 @@
     "lastdigit_entropy_bits": 1.1246752121052674,
     "mantissa_ks_p": 0.20661829763267026,
     "mantissa_mad": 0.028000000000000004,
-    "unique_ratio": 0.03
+    "unique_ratio": 0.03,
+    "benford_f2d_mad": 0.0077133923673827764,
+    "lasttwo_mad": 0.0194,
+    "trailing_zero_mean": 0.6,
+    "int_fraction": 0.0,
+    "decimal_places_entropy": 0.407340745400986,
+    "modal_share": 0.6
    }
   },
   {
@@ -498,7 +624,13 @@
     "lastdigit_entropy_bits": 3.1821753766988006,
     "mantissa_ks_p": 9.715023849181333e-10,
     "mantissa_mad": 0.10200000000000001,
-    "unique_ratio": 0.38
+    "unique_ratio": 0.38,
+    "benford_f2d_mad": 0.012496130906015144,
+    "lasttwo_mad": 0.012400000000000001,
+    "trailing_zero_mean": 0.09,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.1
    }
   },
   {
@@ -520,7 +652,13 @@
     "lastdigit_entropy_bits": 2.8199214025987094,
     "mantissa_ks_p": 0.009338250896670841,
     "mantissa_mad": 0.05,
-    "unique_ratio": 0.2
+    "unique_ratio": 0.2,
+    "benford_f2d_mad": 0.015941780150255477,
+    "lasttwo_mad": 0.016,
+    "trailing_zero_mean": 0.06,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.16
    }
   },
   {
@@ -542,7 +680,13 @@
     "lastdigit_entropy_bits": 3.1981509343603993,
     "mantissa_ks_p": 0.012565559812457328,
     "mantissa_mad": 0.038,
-    "unique_ratio": 0.97
+    "unique_ratio": 0.97,
+    "benford_f2d_mad": 0.009687621716098235,
+    "lasttwo_mad": 0.0084,
+    "trailing_zero_mean": 0.1,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.02
    }
   },
   {
@@ -564,7 +708,13 @@
     "lastdigit_entropy_bits": 3.2373678582975978,
     "mantissa_ks_p": 3.593795465021766e-09,
     "mantissa_mad": 0.10200000000000001,
-    "unique_ratio": 0.34
+    "unique_ratio": 0.34,
+    "benford_f2d_mad": 0.013255172134260714,
+    "lasttwo_mad": 0.013200000000000003,
+    "trailing_zero_mean": 0.08,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.08
    }
   },
   {
@@ -586,7 +736,13 @@
     "lastdigit_entropy_bits": 3.2658845775241927,
     "mantissa_ks_p": 9.716525855472242e-15,
     "mantissa_mad": 0.11000000000000001,
-    "unique_ratio": 0.37
+    "unique_ratio": 0.37,
+    "benford_f2d_mad": 0.013838818632029879,
+    "lasttwo_mad": 0.012600000000000002,
+    "trailing_zero_mean": 0.13,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.06
    }
   },
   {
@@ -608,7 +764,13 @@
     "lastdigit_entropy_bits": 3.2430519388204795,
     "mantissa_ks_p": 0.6084669874433098,
     "mantissa_mad": 0.022000000000000002,
-    "unique_ratio": 0.98
+    "unique_ratio": 0.98,
+    "benford_f2d_mad": 0.008350423529252504,
+    "lasttwo_mad": 0.008,
+    "trailing_zero_mean": 0.07,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.02
    }
   },
   {
@@ -630,7 +792,13 @@
     "lastdigit_entropy_bits": 3.2289509230362796,
     "mantissa_ks_p": 7.297817338892621e-07,
     "mantissa_mad": 0.06799999999999999,
-    "unique_ratio": 0.28
+    "unique_ratio": 0.28,
+    "benford_f2d_mad": 0.012681597316729692,
+    "lasttwo_mad": 0.014400000000000003,
+    "trailing_zero_mean": 0.11,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.09
    }
   },
   {
@@ -652,7 +820,13 @@
     "lastdigit_entropy_bits": 3.220462171621083,
     "mantissa_ks_p": 0.18073009886330083,
     "mantissa_mad": 0.024000000000000007,
-    "unique_ratio": 0.94
+    "unique_ratio": 0.94,
+    "benford_f2d_mad": 0.008375518287592837,
+    "lasttwo_mad": 0.0072,
+    "trailing_zero_mean": 0.09,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.02
    }
   },
   {
@@ -674,7 +848,13 @@
     "lastdigit_entropy_bits": 2.3210966444339585,
     "mantissa_ks_p": 3.8189264250361536e-18,
     "mantissa_mad": 0.09999999999999999,
-    "unique_ratio": 0.13
+    "unique_ratio": 0.13,
+    "benford_f2d_mad": 0.018673794031180423,
+    "lasttwo_mad": 0.017400000000000002,
+    "trailing_zero_mean": 0.01,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.43
    }
   },
   {
@@ -696,7 +876,13 @@
     "lastdigit_entropy_bits": 3.2685358072158905,
     "mantissa_ks_p": 0.00020494413432788075,
     "mantissa_mad": 0.05800000000000001,
-    "unique_ratio": 0.85
+    "unique_ratio": 0.85,
+    "benford_f2d_mad": 0.009566518915734219,
+    "lasttwo_mad": 0.006999999999999999,
+    "trailing_zero_mean": 0.13,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.03
    }
   },
   {
@@ -718,7 +904,13 @@
     "lastdigit_entropy_bits": 2.585325209693602,
     "mantissa_ks_p": 5.639060114940982e-09,
     "mantissa_mad": 0.096,
-    "unique_ratio": 0.15
+    "unique_ratio": 0.15,
+    "benford_f2d_mad": 0.01789154698410862,
+    "lasttwo_mad": 0.017,
+    "trailing_zero_mean": 0.01,
+    "int_fraction": 1.0,
+    "decimal_places_entropy": -0.0,
+    "modal_share": 0.29
    }
   }
  ]
