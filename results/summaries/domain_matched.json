@@ -1,0 +1,47 @@
+{
+ "design": "domain-matched real vs fabricated (same 8 schemas)",
+ "n_real": 48,
+ "n_fab": 106,
+ "n_fab_c0": 36,
+ "n_refusals": 14,
+ "composite_auc_C0_vs_real": 0.527,
+ "real_lastdigit_entropy": 2.704,
+ "real_round_end0": 0.142,
+ "per_model_C0": {
+  "small_open": {
+   "n": 4,
+   "composite_auc_vs_real": 0.656,
+   "lastdigit_entropy": 3.203,
+   "round_end0_rate": 0.045
+  },
+  "large_open": {
+   "n": 8,
+   "composite_auc_vs_real": 0.643,
+   "lastdigit_entropy": 2.376,
+   "round_end0_rate": 0.098
+  },
+  "deepseek": {
+   "n": 8,
+   "composite_auc_vs_real": 0.977,
+   "lastdigit_entropy": 2.597,
+   "round_end0_rate": 0.107
+  },
+  "gemini": {
+   "n": 8,
+   "composite_auc_vs_real": 0.594,
+   "lastdigit_entropy": 2.332,
+   "round_end0_rate": 0.234
+  },
+  "frontier": {
+   "n": 8,
+   "composite_auc_vs_real": 0.75,
+   "lastdigit_entropy": 2.444,
+   "round_end0_rate": 0.111
+  }
+ },
+ "composite_mean_score_by_condition": {
+  "C0": 0.731,
+  "C2": 0.755,
+  "C3": 0.791
+ }
+}
