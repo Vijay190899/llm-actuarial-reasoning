@@ -58,91 +58,118 @@ def localize(response, anchors):
     return first_wrong, sum(any(matches(v, t) for v in found) for _, t in anchors)
 
 
+def get_response(prompt, model):
+    """Fetch, and retry once with more tokens + a nudge if the content is empty
+    (empty content is the main parse-failure cause, usually a token cutoff)."""
+    txt = oai_generate(prompt, model, temperature=0.3, max_tokens=1200)
+    if isinstance(txt, str) and txt.strip():
+        return txt, False
+    txt2 = oai_generate(prompt + " Be concise; end with 'ANSWER: <number>'.", model,
+                        temperature=0.3, max_tokens=2600)
+    return (txt2, False) if isinstance(txt2, str) and txt2.strip() else (txt2, True)
+
+
 def run(model_keys, n_per_family, out):
     probs = ap.generate(n_per_family=n_per_family, seed=7)
-    recs, refusals, extractable = [], 0, 0
+    recs, no_answer, extractable = [], [], 0
+    audit = []  # localization spot-check sample
     for mk in model_keys:
         model = MODELS[mk]
         for pi, p in enumerate(probs):
             variants = {"v0": p["text"], "v1": p["reword"][0], "v2": p["reword"][1]}
-            # base condition: all three phrasings (for consistency) + scaffold on v0
             calls = {f"base_{vk}": vt + ap.BASE_INSTRUCTION for vk, vt in variants.items()}
-            calls["scaffold_v0"] = p["text"] + " " + ap.SCAFFOLD
+            calls["scaffoldA_v0"] = p["text"] + " " + ap.SCAFFOLD_A
+            calls["scaffoldB_v0"] = p["text"] + " " + ap.SCAFFOLD_B
             for cond, prompt in calls.items():
                 try:
-                    txt = oai_generate(prompt, model, temperature=0.3, max_tokens=1200)
+                    txt, empty = get_response(prompt, model)
                 except DailyCapError as e:
                     print("cap:", e); continue
-                if not isinstance(txt, str) or not txt.strip():
-                    refusals += 1; continue
-                fa = final_answer(txt)
+                fa = None if empty else final_answer(txt)
                 if fa is None:
-                    refusals += 1; continue
+                    no_answer.append({"model": mk, "family": p["family"], "cond": cond,
+                                      "empty": bool(empty)})
+                    continue
                 correct = matches(fa, p["answer"])
                 fw, nfound = localize(txt, p["anchors"])
-                # KC1 = did the model SHOW parseable working (numbers beyond the final),
-                # so a first-divergence step can be identified? This is parse-ability,
-                # not correctness (a wrong-but-shown answer is still localizable).
-                shows_work = len(nums(txt)) >= 3
-                if shows_work:
+                if len(nums(txt)) >= 3:
                     extractable += 1
                 recs.append({"model": mk, "family": p["family"], "prob": pi, "cond": cond,
                              "final": fa, "answer": p["answer"], "correct": bool(correct),
-                             "first_wrong_anchor": fw, "n_anchors": len(p["anchors"]),
-                             "anchors_found": int(nfound)})
+                             "first_wrong_anchor": fw, "n_anchors": len(p["anchors"])})
+                # collect a localization audit sample (incorrect base_v0 cases)
+                if cond == "base_v0" and not correct and len(audit) < 24:
+                    anchor_str = "; ".join(f"{n}={v:.4f}" for n, v in p["anchors"])
+                    audit.append({"model": mk, "family": p["family"], "answer": round(p["answer"], 4),
+                                  "flagged_anchor": fw, "anchors": anchor_str,
+                                  "model_tail": txt[-260:]})
         print(f"  {mk}: {sum(1 for r in recs if r['model']==mk)} responses")
+    (SUMMARIES / "localization_audit.json").write_text(json.dumps(audit, indent=1), encoding="utf-8")
 
     # ---- aggregate ----
     def acc(rows):
         return round(np.mean([r["correct"] for r in rows]), 3) if rows else None
-    base = [r for r in recs if r["cond"].startswith("base_")]
     base_v0 = [r for r in recs if r["cond"] == "base_v0"]
-    scaf = [r for r in recs if r["cond"] == "scaffold_v0"]
 
-    # RQ1 accuracy by model (base_v0)
     acc_by_model = {mk: acc([r for r in base_v0 if r["model"] == mk]) for mk in model_keys}
     acc_by_family = {f: acc([r for r in base_v0 if r["family"] == f]) for f in ap.RNG_ORDER}
 
-    # RQ2 localization: distribution of first-wrong-anchor among INCORRECT base_v0 responses
-    wrong = [r for r in base_v0 if not r["correct"]]
+    # RQ2 localization among INCORRECT base_v0
     loc_dist = {}
-    for r in wrong:
+    for r in [x for x in base_v0 if not x["correct"]]:
         k = "final_only" if r["first_wrong_anchor"] is None else f"anchor_{r['first_wrong_anchor']}"
         loc_dist[k] = loc_dist.get(k, 0) + 1
 
-    # RQ3 consistency: per (model, prob) do v0,v1,v2 finals agree with each other?
-    consist = []
+    # RQ3 consistency (FIXED): separate consistency from accuracy.
+    #  consistent          = all 3 rewordings agree with each other (right or wrong)
+    #  consistent_correct  = all 3 agree AND match the true answer
+    #  mean_cov            = mean coefficient of variation of the 3 finals (dispersion)
+    con_agree, con_correct, covs = [], [], []
     for mk in model_keys:
         for pi in range(len(probs)):
-            fs = [r["final"] for r in base if r["model"] == mk and r["prob"] == pi]
-            if len(fs) == 3:
-                agree = all(matches(fs[a], fs[0]) for a in range(3))
-                consist.append(agree)
-    consistency_rate = round(np.mean(consist), 3) if consist else None
+            fs = [r["final"] for r in recs
+                  if r["model"] == mk and r["prob"] == pi and r["cond"].startswith("base_")]
+            truth = next((r["answer"] for r in recs
+                          if r["model"] == mk and r["prob"] == pi), None)
+            if len(fs) == 3 and fs[0]:
+                agree = all(matches(f, fs[0]) for f in fs)
+                con_agree.append(agree)
+                con_correct.append(agree and truth is not None and matches(fs[0], truth))
+                m = np.mean(fs)
+                if m:
+                    covs.append(np.std(fs) / abs(m))
+    consistency = {
+        "consistent_across_rewordings": round(np.mean(con_agree), 3) if con_agree else None,
+        "consistent_and_correct": round(np.mean(con_correct), 3) if con_correct else None,
+        "mean_coeff_of_variation": round(float(np.mean(covs)), 3) if covs else None,
+    }
 
-    # RQ4 mitigation: accuracy base_v0 vs scaffold_v0 (paired by model,prob)
-    def paired_acc(rows):
-        return round(np.mean([r["correct"] for r in rows]), 3) if rows else None
+    # RQ4 mitigation: base vs TWO scaffolds
+    mitigation = {c: acc([r for r in recs if r["cond"] == c])
+                  for c in ("base_v0", "scaffoldA_v0", "scaffoldB_v0")}
+    mit_by_model = {mk: {c: acc([r for r in recs if r["model"] == mk and r["cond"] == c])
+                         for c in ("base_v0", "scaffoldA_v0", "scaffoldB_v0")} for mk in model_keys}
 
+    n_empty = sum(1 for x in no_answer if x["empty"])
     summary = {
         "models": model_keys, "n_problems": len(probs), "n_responses": len(recs),
-        "n_refusals_no_answer": refusals,
+        "n_no_answer_after_retry": len(no_answer), "n_empty_content": n_empty,
         "KC1_extractable_rate": round(extractable / max(len(recs), 1), 3),
         "RQ1_accuracy_by_model_base": acc_by_model,
         "RQ1_accuracy_by_family_base": acc_by_family,
         "RQ2_first_wrong_anchor_dist_among_incorrect": loc_dist,
-        "RQ3_consistency_rate_across_rewordings": consistency_rate,
-        "RQ4_accuracy_base_vs_scaffold": {"base_v0": paired_acc(base_v0), "scaffold_v0": paired_acc(scaf)},
+        "RQ3_consistency": consistency,
+        "RQ4_mitigation_overall": mitigation,
+        "RQ4_mitigation_by_model": mit_by_model,
         "records": recs,
     }
     (SUMMARIES / out).write_text(json.dumps(summary, indent=1), encoding="utf-8")
-    print("\nACTUARIAL PILOT")
-    print(" KC1 extractable rate:", summary["KC1_extractable_rate"])
+    print("\nACTUARIAL PILOT (corrected)")
+    print(" no-answer after retry:", len(no_answer), "(empty:", n_empty, ")")
     print(" RQ1 accuracy by model:", acc_by_model)
-    print(" RQ1 accuracy by family:", acc_by_family)
-    print(" RQ2 first-wrong-anchor among incorrect:", loc_dist)
-    print(" RQ3 consistency across rewordings:", consistency_rate)
-    print(" RQ4 base vs scaffold accuracy:", summary["RQ4_accuracy_base_vs_scaffold"])
+    print(" RQ2 localization:", loc_dist)
+    print(" RQ3 consistency:", consistency)
+    print(" RQ4 mitigation overall:", mitigation)
     return summary
 
 

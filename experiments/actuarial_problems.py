@@ -115,9 +115,15 @@ def make_family(fam, rng):
             "anchors": [(nm, float(val)) for nm, val in anchors], "params": params}
 
 
-SCAFFOLD = ("Solve step by step. First state the exact formula you will use and the timing convention "
-            "(payments in advance vs arrears; benefit timing). Then compute each intermediate quantity "
-            "explicitly and label it. Do arithmetic carefully. End with a line 'ANSWER: <number>'.")
+# Two scaffold designs, so a null mitigation result is not attributed to one weak prompt.
+SCAFFOLD_A = ("Solve step by step. First state the exact formula you will use and the timing convention "
+              "(payments in advance vs arrears; benefit timing). Then compute each intermediate quantity "
+              "explicitly and label it. Do arithmetic carefully. End with a line 'ANSWER: <number>'.")
+SCAFFOLD_B = ("Work in two passes. Pass 1: identify the exact formula and the timing convention, and list "
+              "every input value. Pass 2: compute each intermediate value, then recompute the final answer "
+              "a second, independent way to check it; if the two disagree, find and fix the error. "
+              "End with a line 'ANSWER: <number>'.")
+SCAFFOLD = SCAFFOLD_A  # backward compat
 
 BASE_INSTRUCTION = " Show your work briefly and end with a line 'ANSWER: <number>'."
 

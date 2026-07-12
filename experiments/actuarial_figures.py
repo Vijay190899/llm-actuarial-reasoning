@@ -128,22 +128,21 @@ def fig_consistency(recs, models):
 
 
 def fig_mitigation(recs, models):
-    base, scaf = [], []
-    for m in models:
-        b = [r["correct"] for r in recs if r["model"] == m and r["cond"] == "base_v0"]
-        s = [r["correct"] for r in recs if r["model"] == m and r["cond"] == "scaffold_v0"]
-        base.append(np.mean(b) if b else 0.0); scaf.append(np.mean(s) if s else 0.0)
-    fig, ax = plt.subplots(figsize=(6.6, 3.4))
-    x = np.arange(len(models)); w = 0.38
-    ax.bar(x - w / 2, base, w, color=OI[0], label="baseline prompt", edgecolor="white", linewidth=1.2)
-    ax.bar(x + w / 2, scaf, w, color=OI[1], label="structured scaffold", edgecolor="white", linewidth=1.2)
-    for xi, (b, s) in enumerate(zip(base, scaf)):
-        ax.text(xi - w / 2, b + 0.02, f"{b:.0%}", ha="center", va="bottom", fontsize=8, color=INK)
-        ax.text(xi + w / 2, s + 0.02, f"{s:.0%}", ha="center", va="bottom", fontsize=8, color=INK)
+    conds = [("base_v0", "baseline"), ("scaffoldA_v0", "scaffold A (steps)"),
+             ("scaffoldB_v0", "scaffold B (verify)")]
+    vals = {c: [np.mean([r["correct"] for r in recs if r["model"] == m and r["cond"] == c] or [0.0])
+                for m in models] for c, _ in conds}
+    fig, ax = plt.subplots(figsize=(7.2, 3.6))
+    x = np.arange(len(models)); w = 0.26
+    for k, (c, lab) in enumerate(conds):
+        off = (k - 1) * w
+        ax.bar(x + off, vals[c], w, color=OI[k], label=lab, edgecolor="white", linewidth=1.2)
+        for xi, v in enumerate(vals[c]):
+            ax.text(xi + off, v + 0.02, f"{v:.0%}", ha="center", va="bottom", fontsize=7.5, color=INK)
     ax.set_xticks(x); ax.set_xticklabels([MODEL_LABEL.get(m, m) for m in models], rotation=15, ha="right")
     ax.set_ylim(0, 1.05); ax.set_ylabel("accuracy"); _clean(ax)
-    ax.legend(frameon=False, fontsize=9)
-    ax.set_title("Mitigation: baseline vs structured scaffold", color=INK, loc="left")
+    ax.legend(frameon=False, fontsize=8, ncol=3, loc="upper center", bbox_to_anchor=(0.5, 1.12))
+    ax.set_title("Mitigation: baseline vs two prompt scaffolds", color=INK, loc="left", pad=18)
     fig.tight_layout(); _save(fig, "F4_mitigation")
 
 
