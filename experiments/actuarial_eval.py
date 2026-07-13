@@ -21,7 +21,9 @@ MODELS = {
     "deepseek": "deepseek/deepseek-chat-v3.1",
     "gemini":   "google/gemini-2.5-flash",
     "gptoss120": "openai/gpt-oss-120b",
+    "r1":       "deepseek/deepseek-r1",       # reasoning sibling of deepseek-chat (reasoning-vs-instruct)
 }
+REASONING = {"r1"}                            # localization not depended on for these (hidden/long CoT)
 REL = 0.01  # relative tolerance for "matches"
 
 
@@ -58,14 +60,14 @@ def localize(response, anchors):
     return first_wrong, sum(any(matches(v, t) for v in found) for _, t in anchors)
 
 
-def get_response(prompt, model):
+def get_response(prompt, model, base_tokens=1200):
     """Fetch, and retry once with more tokens + a nudge if the content is empty
     (empty content is the main parse-failure cause, usually a token cutoff)."""
-    txt = oai_generate(prompt, model, temperature=0.3, max_tokens=1200)
+    txt = oai_generate(prompt, model, temperature=0.3, max_tokens=base_tokens)
     if isinstance(txt, str) and txt.strip():
         return txt, False
     txt2 = oai_generate(prompt + " Be concise; end with 'ANSWER: <number>'.", model,
-                        temperature=0.3, max_tokens=2600)
+                        temperature=0.3, max_tokens=base_tokens + 2000)
     return (txt2, False) if isinstance(txt2, str) and txt2.strip() else (txt2, True)
 
 
@@ -75,6 +77,7 @@ def run(model_keys, n_per_family, out):
     audit = []  # localization spot-check sample
     for mk in model_keys:
         model = MODELS[mk]
+        base_tokens = 4000 if mk in REASONING else 1200   # reasoning models need room for CoT
         for pi, p in enumerate(probs):
             variants = {"v0": p["text"], "v1": p["reword"][0], "v2": p["reword"][1]}
             calls = {f"base_{vk}": vt + ap.BASE_INSTRUCTION for vk, vt in variants.items()}
@@ -82,7 +85,7 @@ def run(model_keys, n_per_family, out):
             calls["scaffoldB_v0"] = p["text"] + " " + ap.SCAFFOLD_B
             for cond, prompt in calls.items():
                 try:
-                    txt, empty = get_response(prompt, model)
+                    txt, empty = get_response(prompt, model, base_tokens)
                 except DailyCapError as e:
                     print("cap:", e); continue
                 fa = None if empty else final_answer(txt)

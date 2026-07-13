@@ -30,7 +30,7 @@ def _fmt(i):
 def make_family(fam, rng):
     """Return one problem dict for the given family, parameters drawn from rng."""
     if fam == "A_ann_imm":
-        pmt = rng.choice([1000, 2500, 5000, 800]); n = rng.choice([8, 10, 12, 15]); i = rng.choice([0.04, 0.05, 0.06])
+        pmt = rng.choice([1000, 2500, 5000, 800]); n = int(rng.choice([6, 8, 10, 12, 15, 20])); i = rng.choice([0.03, 0.04, 0.05, 0.06, 0.07])
         factor = a_immediate_n(n, i); ans = pmt * factor
         text = (f"An annuity pays {pmt} at the END of each year for {n} years. "
                 f"The annual effective interest rate is {_fmt(i)}. Find the present value.")
@@ -42,7 +42,7 @@ def make_family(fam, rng):
         params = {"pmt": pmt, "n": n, "i": i}
 
     elif fam == "B_ann_due":
-        pmt = rng.choice([1000, 2000, 3000, 1500]); n = rng.choice([8, 10, 12, 15]); i = rng.choice([0.04, 0.05, 0.06])
+        pmt = rng.choice([1000, 2000, 3000, 1500]); n = int(rng.choice([6, 8, 10, 12, 15, 20])); i = rng.choice([0.03, 0.04, 0.05, 0.06, 0.07])
         factor = a_due_n(n, i); ans = pmt * factor
         text = (f"An annuity pays {pmt} at the BEGINNING of each year for {n} years. "
                 f"The annual effective interest rate is {_fmt(i)}. Find the present value.")
@@ -54,7 +54,7 @@ def make_family(fam, rng):
         params = {"pmt": pmt, "n": n, "i": i}
 
     elif fam == "C_accum":
-        pmt = rng.choice([1000, 1200, 2000, 500]); n = rng.choice([10, 15, 20]); i = rng.choice([0.04, 0.05, 0.06])
+        pmt = rng.choice([1000, 1200, 2000, 500]); n = int(rng.choice([8, 10, 15, 20, 25])); i = rng.choice([0.03, 0.04, 0.05, 0.06, 0.07])
         factor = s_immediate_n(n, i); ans = pmt * factor
         text = (f"Deposits of {pmt} are made at the END of each year for {n} years into a fund earning "
                 f"{_fmt(i)} annual effective interest. Find the accumulated value just after the last deposit.")
@@ -66,7 +66,7 @@ def make_family(fam, rng):
         params = {"pmt": pmt, "n": n, "i": i}
 
     elif fam == "D_pure_endow":
-        x = rng.choice([40, 45, 50, 55]); n = rng.choice([5, 10]); i = rng.choice([0.05, 0.06]); ben = rng.choice([10000, 25000, 50000])
+        x = rng.choice([35, 40, 45, 50, 55, 60]); n = int(rng.choice([5, 8, 10, 12])); i = rng.choice([0.05, 0.06]); ben = rng.choice([10000, 25000, 50000])
         lx = _lx_integers(x, x + n); v = 1 / (1 + i)
         npx = lx[x + n] / lx[x]; ans = ben * (v ** n) * npx
         tbl = ", ".join(f"l_{a}={lx[a]}" for a in (x, x + n))
@@ -80,7 +80,7 @@ def make_family(fam, rng):
         params = {"x": x, "n": n, "i": i, "benefit": ben, "lx": lx}
 
     elif fam == "E_term_ins":
-        x = rng.choice([50, 55, 60]); n = 3; i = rng.choice([0.05, 0.06]); ben = rng.choice([10000, 100000, 50000])
+        x = rng.choice([45, 50, 55, 60, 65]); n = int(rng.choice([2, 3, 4])); i = rng.choice([0.05, 0.06]); ben = rng.choice([10000, 100000, 50000])
         lx = _lx_integers(x, x + n); v = 1 / (1 + i)
         factor = sum((v ** (k + 1)) * (lx[x + k] - lx[x + k + 1]) / lx[x] for k in range(n))
         ans = ben * factor
@@ -96,7 +96,7 @@ def make_family(fam, rng):
         params = {"x": x, "n": n, "i": i, "benefit": ben, "lx": lx}
 
     else:  # F_temp_annuity
-        x = rng.choice([50, 55, 60]); n = 3; i = rng.choice([0.05, 0.06]); pmt = rng.choice([1000, 5000, 2000])
+        x = rng.choice([45, 50, 55, 60, 65]); n = int(rng.choice([2, 3, 4])); i = rng.choice([0.05, 0.06]); pmt = rng.choice([1000, 5000, 2000])
         lx = _lx_integers(x, x + n - 1); v = 1 / (1 + i)
         factor = sum((v ** k) * (lx[x + k] / lx[x]) for k in range(n))
         ans = pmt * factor
