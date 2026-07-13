@@ -21,9 +21,11 @@ Problems are procedurally generated with randomized parameters, so the exact ite
 - `experiments/actuarial_problems.py` problem instances with code-computed answers, labelled anchor steps, reworded variants, and a mitigation scaffold.
 - `experiments/actuarial_eval.py` runs models, grades final answers, localizes the first wrong step, and measures consistency.
 - `experiments/common.py` cached calls to an OpenAI-compatible endpoint (OpenRouter).
+- `experiments/actuarial_stats.py` Wilson confidence intervals and bootstrap intervals for the reported numbers.
+- `experiments/actuarial_figures.py` renders the paper figures from the results.
 - `results/summaries/` machine-readable results. Every number reported traces back to one of these.
-- `brain/` project notes: state, decisions, findings, and the red-team log.
-- `experiment_design.md`, `council_protocol.md`, `pivot_ladder.md` the plan, the review protocol, and the roadblock policy.
+- `paper/` the manuscript and figures.
+- `experiment_design.md` the study design and pre-registered criteria.
 
 ## Reproducibility
 
