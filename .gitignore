@@ -22,5 +22,11 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Keep: experiments/, brain/, results/summaries/, paper/, council/, docs
 !results/summaries/
+
+# Local-only: internal notes, process docs, and the non-anonymous preprint
+# (kept out of the public repo)
+brain/
+paper_preprint/
+council_protocol.md
+pivot_ladder.md
