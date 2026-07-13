@@ -35,7 +35,7 @@ Our contributions are:
 \item A measurement of answer stability under semantically equivalent rewording, separated from accuracy.
 \item A test of whether two structured prompt scaffolds improve accuracy, with confidence intervals.
 \end{itemize}
-The method borrows the idea of procedurally generated, code-verifiable reasoning problems from recent work on financial chains of thought (arXiv:2506.02515), and extends it to actuarial life contingencies, to first-error localization, to rewording stability, and to prompt mitigation.
+The method borrows the idea of procedurally generated, code-verifiable reasoning problems from recent work on financial chains of thought \citep{finchain2025}, and extends it to actuarial life contingencies, to first-error localization, to rewording stability, and to prompt mitigation.
 
 \begin{figure}[t]\centering
 \begin{tikzpicture}[>=Latex, node distance=8mm and 9mm,
@@ -57,9 +57,9 @@ The method borrows the idea of procedurally generated, code-verifiable reasoning
 \end{figure}
 
 \section{Related work}
-Two 2026 benchmarks evaluate language models on actuarial and insurance content and report final-answer accuracy, with most models scoring below forty on a hundred-point scale and reasoning-tuned models ahead of instruction-tuned ones (arXiv:2604.20273; arXiv:2511.07794). Our work is complementary: we do not add another accuracy leaderboard, we ask where and why the answers fail, whether they are stable, and whether a simple intervention helps.
+Two recent benchmarks evaluate language models on actuarial and insurance content and report final-answer accuracy, with most models scoring below forty on a hundred-point scale and reasoning-tuned models ahead of instruction-tuned ones \citep{actubench2026, insurancebench2025}. Our work is complementary: we do not add another accuracy leaderboard, we ask where and why the answers fail, whether they are stable, and whether a simple intervention helps.
 
-The closest methodological neighbor generates financial reasoning problems from parameterized symbolic templates with executable code, which supports step-level checking and avoids contamination (arXiv:2506.02515). That work covers general finance, such as interest, valuation, and accounting, and does not include life contingencies, does not locate and classify the first incorrect step, and does not study rewording stability or mitigation. We adopt the procedural, code-verified setup and apply it to a different domain and a different set of questions.
+The closest methodological neighbor generates financial reasoning problems from parameterized symbolic templates with executable code, which supports step-level checking and avoids contamination \citep{finchain2025}. That work covers general finance, such as interest, valuation, and accounting, and does not include life contingencies, does not locate and classify the first incorrect step, and does not study rewording stability or mitigation. We adopt the procedural, code-verified setup and apply it to a different domain and a different set of questions.
 
 A separate line of work studies error localization directly, asking a model or a judge to identify the first wrong step in a reasoning trace, and reports that even strong models find this hard. We use a simpler and fully objective route: because we compute the correct value of each anchor quantity, we can check the model's own stated values against ground truth without a second model in the loop.
 
