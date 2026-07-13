@@ -15,6 +15,7 @@
 \author{Anonymous}
 
 \begin{document}
+\raggedbottom
 \maketitle
 
 \begin{abstract}
@@ -24,7 +25,7 @@ Insurers and actuaries have started to use large language models for calculation
 \section{Introduction}
 Actuarial work is arithmetic with consequences. A premium, a reserve, or an expected present value feeds directly into pricing, solvency reporting, and individual policy decisions, and a small error can be expensive. Language models are now being tried on exactly this kind of task, and professional bodies have begun to ask how far they can be trusted with it.
 
-Two recent benchmarks measure how often a model gets an actuarial answer right, and both find that most models score below a passing mark. That tells us the models fail often. It does not tell us how they fail, and the how is what an actuary or an auditor needs before relying on a tool. If a model reaches the wrong number, does it pick the wrong formula, misread the mortality table, confuse a payment made at the start of the year with one made at the end, or simply slip on the final multiplication? Does the same problem, written two reasonable ways, give the same answer? Does the standard advice to prompt a model into showing its work actually help here?
+Two recent benchmarks measure how often a model gets an actuarial answer right, and both find that most models score below a passing mark. That tells us the models fail often. It does not tell us how they fail, and the how is what an actuary or an auditor needs before relying on a tool. If a model reaches the wrong number, does it pick the wrong formula, misread the mortality table, confuse a payment made at the start of the year with one made at the end, or simply slip on the final multiplication? Does the same problem, written two reasonable ways, give the same answer? Does the standard advice to prompt a model into showing its work \citep{wei2022cot} actually help here?
 
 We answer these questions with a diagnostic rather than another scoreboard. Our design rests on one property that makes the answers trustworthy: because we generate each problem from code, we know the correct final value and the correct value of every step along the way. That lets us check not only the answer but the reasoning, and it removes the worry that a model has memorized a public benchmark, since the specific numbers are drawn fresh each time. Figure~\ref{fig:pipeline} shows the pipeline.
 
@@ -38,19 +39,23 @@ Our contributions are:
 The method borrows the idea of procedurally generated, code-verifiable reasoning problems from recent work on financial chains of thought \citep{finchain2025}, and extends it to actuarial life contingencies, to first-error localization, to rewording stability, and to prompt mitigation.
 
 \begin{figure}[t]\centering
-\begin{tikzpicture}[>=Latex, node distance=8mm and 9mm,
-  box/.style={draw, rounded corners, align=center, inner sep=4pt, font=\small, minimum height=11mm}]
-\node[box] (engine) {Validated engine\\Makeham SULT,\\interest and life};
-\node[box, right=of engine] (gen) {Procedural generator\\problem, gold anchor\\steps, 2 rewordings};
-\node[box, right=of gen] (model) {Language model\\show work,\\end with ANSWER};
-\node[box, right=of model] (parse) {Extract numbers\\and final answer};
-\node[box, below=14mm of gen, minimum width=52mm] (grade)
+\begin{tikzpicture}[>=Latex, node distance=8mm and 9mm, font=\small,
+  base/.style={draw, rounded corners, align=center, inner sep=4pt, minimum height=11mm, text=black},
+  data/.style={base, fill=blue!8, draw=blue!60},
+  proc/.style={base, fill=orange!14, draw=orange!75},
+  eval/.style={base, fill=green!10, draw=green!55, minimum width=52mm}]
+\node[data] (engine) {Validated engine\\Makeham SULT,\\interest and life};
+\node[data, right=of engine] (gen) {Procedural generator\\problem, gold anchor\\steps, 2 rewordings};
+\node[proc, right=of gen] (model) {Language model\\show work,\\end with ANSWER};
+\node[proc, right=of model] (parse) {Extract numbers\\and final answer};
+\node[eval, below=14mm of gen] (grade)
    {Grade final within 1\%\\Localize first wrong anchor\\Compare the 3 rewordings};
-\draw[->] (engine) -- (gen);
-\draw[->] (gen) -- (model);
-\draw[->] (model) -- (parse);
-\draw[->] (parse) |- (grade);
-\draw[->] (gen) -- (grade) node[midway, left, font=\scriptsize] {gold};
+\draw[->, thick, gray!65] (engine) -- (gen);
+\draw[->, thick, gray!65] (gen) -- (model);
+\draw[->, thick, gray!65] (model) -- (parse);
+\draw[->, thick, gray!65] (parse) |- (grade);
+\draw[->, thick, olive!75!black] (gen) -- (grade)
+   node[midway, left, font=\scriptsize, text=olive!45!black] {gold};
 \end{tikzpicture}
 \caption{The evaluation pipeline. Problems and their correct intermediate quantities come from a validated engine, so grading and step-level localization are exact and need no second model.}
 \label{fig:pipeline}
@@ -58,6 +63,8 @@ The method borrows the idea of procedurally generated, code-verifiable reasoning
 
 \section{Related work}
 Two recent benchmarks evaluate language models on actuarial and insurance content and report final-answer accuracy, with most models scoring below forty on a hundred-point scale and reasoning-tuned models ahead of instruction-tuned ones \citep{actubench2026, insurancebench2025}. Our work is complementary: we do not add another accuracy leaderboard, we ask where and why the answers fail, whether they are stable, and whether a simple intervention helps.
+
+Language models are known to be unreliable at multi-step arithmetic and at handling numbers. They miss grade-school word problems often enough to motivate dedicated verifiers \citep{cobbe2021gsm8k}, they mishandle numerals and units of measurement in chain-of-thought reasoning \citep{xu2024numcot}, and even multi-operand addition is hard for them \citep{baeumel2025lookahead}. An actuarial factor is exactly this kind of object, a multi-step computation over a mortality table and a discount rate, so we expect and find similar failures. A separate and well-documented weakness is sensitivity to the surface form of a prompt: small, meaning-preserving changes to how a question is written can change the answer \citep{sclar2024sensitivity}. We measure that sensitivity on a task with a single correct answer. A related idea, sampling several chains of thought and voting, uses agreement as a confidence signal \citep{wang2023selfconsistency}; we instead measure agreement across equivalent rewordings of one question.
 
 The closest methodological neighbor generates financial reasoning problems from parameterized symbolic templates with executable code, which supports step-level checking and avoids contamination \citep{finchain2025}. That work covers general finance, such as interest, valuation, and accounting, and does not include life contingencies, does not locate and classify the first incorrect step, and does not study rewording stability or mitigation. We adopt the procedural, code-verified setup and apply it to a different domain and a different set of questions.
 
@@ -119,7 +126,7 @@ The same problem, written three equivalent ways, gives the same answer in only 5
 \end{figure}
 
 \subsection{Structured scaffolds reduce accuracy}
-The common advice to make a model spell out its steps does not help here. Both scaffolds lower accuracy relative to the plain prompt. Averaged over models, accuracy falls from 0.71 to 0.55 with the step scaffold and to 0.44 with the two-pass checking scaffold. The paired drops are 0.16 (95\% CI [0.08, 0.23]) and 0.26 (95\% CI [0.19, 0.34]), and both intervals exclude zero, so the reduction is not noise (Figure~\ref{fig:mit}). One model, \texttt{gemini-2.5-flash}, gains from the step scaffold, so the effect is not universal, but the general direction is a loss. We read this narrowly: these two prompt designs did not help on these tasks, and it is likely that a calculator or an external tool, rather than more prose, is the right way to fix arithmetic.
+The common advice to make a model spell out its steps \citep{wei2022cot} does not help here. Both scaffolds lower accuracy relative to the plain prompt. Averaged over models, accuracy falls from 0.71 to 0.55 with the step scaffold and to 0.44 with the two-pass checking scaffold. The paired drops are 0.16 (95\% CI [0.08, 0.23]) and 0.26 (95\% CI [0.19, 0.34]), and both intervals exclude zero, so the reduction is not noise (Figure~\ref{fig:mit}). One model, \texttt{gemini-2.5-flash}, gains from the step scaffold, so the effect is not universal, but the general direction is a loss. We read this narrowly: these two prompt designs did not help on these tasks, and it is likely that a calculator or an external tool, rather than more prose, is the right way to fix arithmetic.
 
 \begin{figure}[t]\centering
 \includegraphics[width=0.8\linewidth]{F4_mitigation.pdf}
