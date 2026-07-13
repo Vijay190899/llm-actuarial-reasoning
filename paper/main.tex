@@ -143,6 +143,7 @@ Language models fail on actuarial calculations in a specific and legible way. Th
 \section*{Reproducibility statement}
 The mortality and interest engine, the problem generator, the evaluation harness, the statistics, and the figure scripts are released. The engine's validation checks run before any model call. Every number in this paper is produced by a script that reads \texttt{results/summaries/actuarial\_scaled.json} or \texttt{results/summaries/actuarial\_stats.json}; none is entered by hand. Model responses are cached by a hash of the request, and the exact model identifiers and access date are recorded above, so the results reproduce without new API calls.
 
+\newpage
 \bibliographystyle{tmlr}
 \bibliography{references}
 
