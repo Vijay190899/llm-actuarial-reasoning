@@ -1,16 +1,18 @@
-% Draft manuscript. Target venue: TMLR (swap \documentclass for tmlr.sty at submission).
+% TMLR submission (double-blind). Compile: pdflatex; bibtex; pdflatex; pdflatex.
 % Every reported number traces to results/summaries/actuarial_scaled.json or
 % results/summaries/actuarial_stats.json (see the Reproducibility statement).
-\documentclass[11pt]{article}
-\usepackage[margin=1in]{geometry}
+\documentclass{article}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\usepackage{tmlr}
 \usepackage{hyperref}
 \graphicspath{{../results/figures/}}
+
 \title{Where Language Models Break on Actuarial Calculations:\\A Step-Level Diagnostic on Life Contingencies}
-\author{}
-\date{}
+\author{Anonymous}
 
 \begin{document}
 \maketitle
@@ -24,7 +26,7 @@ Actuarial work is arithmetic with consequences. A premium, a reserve, or an expe
 
 Two recent benchmarks measure how often a model gets an actuarial answer right, and both find that most models score below a passing mark. That tells us the models fail often. It does not tell us how they fail, and the how is what an actuary or an auditor needs before relying on a tool. If a model reaches the wrong number, does it pick the wrong formula, misread the mortality table, confuse a payment made at the start of the year with one made at the end, or simply slip on the final multiplication? Does the same problem, written two reasonable ways, give the same answer? Does the standard advice to prompt a model into showing its work actually help here?
 
-We answer these questions with a diagnostic rather than another scoreboard. Our design rests on one property that makes the answers trustworthy: because we generate each problem from code, we know the correct final value and the correct value of every step along the way. That lets us check not only the answer but the reasoning, and it removes the worry that a model has memorized a public benchmark, since the specific numbers are drawn fresh each time.
+We answer these questions with a diagnostic rather than another scoreboard. Our design rests on one property that makes the answers trustworthy: because we generate each problem from code, we know the correct final value and the correct value of every step along the way. That lets us check not only the answer but the reasoning, and it removes the worry that a model has memorized a public benchmark, since the specific numbers are drawn fresh each time. Figure~\ref{fig:pipeline} shows the pipeline.
 
 Our contributions are:
 \begin{itemize}
@@ -33,19 +35,38 @@ Our contributions are:
 \item A measurement of answer stability under semantically equivalent rewording, separated from accuracy.
 \item A test of whether two structured prompt scaffolds improve accuracy, with confidence intervals.
 \end{itemize}
-The method borrows the idea of procedurally generated, code-verifiable reasoning problems from recent work on financial chains of thought, and extends it to actuarial life contingencies, to first-error localization, to rewording stability, and to prompt mitigation.
+The method borrows the idea of procedurally generated, code-verifiable reasoning problems from recent work on financial chains of thought (arXiv:2506.02515), and extends it to actuarial life contingencies, to first-error localization, to rewording stability, and to prompt mitigation.
+
+\begin{figure}[t]\centering
+\begin{tikzpicture}[>=Latex, node distance=8mm and 9mm,
+  box/.style={draw, rounded corners, align=center, inner sep=4pt, font=\small, minimum height=11mm}]
+\node[box] (engine) {Validated engine\\Makeham SULT,\\interest and life};
+\node[box, right=of engine] (gen) {Procedural generator\\problem, gold anchor\\steps, 2 rewordings};
+\node[box, right=of gen] (model) {Language model\\show work,\\end with ANSWER};
+\node[box, right=of model] (parse) {Extract numbers\\and final answer};
+\node[box, below=14mm of gen, minimum width=52mm] (grade)
+   {Grade final within 1\%\\Localize first wrong anchor\\Compare the 3 rewordings};
+\draw[->] (engine) -- (gen);
+\draw[->] (gen) -- (model);
+\draw[->] (model) -- (parse);
+\draw[->] (parse) |- (grade);
+\draw[->] (gen) -- (grade) node[midway, left, font=\scriptsize] {gold};
+\end{tikzpicture}
+\caption{The evaluation pipeline. Problems and their correct intermediate quantities come from a validated engine, so grading and step-level localization are exact and need no second model.}
+\label{fig:pipeline}
+\end{figure}
 
 \section{Related work}
-Two 2026 benchmarks evaluate language models on actuarial and insurance content and report final-answer accuracy, with most models scoring below forty on a hundred-point scale and reasoning-tuned models ahead of instruction-tuned ones. Our work is complementary: we do not add another accuracy leaderboard, we ask where and why the answers fail, whether they are stable, and whether a simple intervention helps.
+Two 2026 benchmarks evaluate language models on actuarial and insurance content and report final-answer accuracy, with most models scoring below forty on a hundred-point scale and reasoning-tuned models ahead of instruction-tuned ones (arXiv:2604.20273; arXiv:2511.07794). Our work is complementary: we do not add another accuracy leaderboard, we ask where and why the answers fail, whether they are stable, and whether a simple intervention helps.
 
-The closest methodological neighbor generates financial reasoning problems from parameterized symbolic templates with executable code, which supports step-level checking and avoids contamination. That work covers general finance, such as interest, valuation, and accounting, and does not include life contingencies, does not locate and classify the first incorrect step, and does not study rewording stability or mitigation. We adopt the procedural, code-verified setup and apply it to a different domain and a different set of questions.
+The closest methodological neighbor generates financial reasoning problems from parameterized symbolic templates with executable code, which supports step-level checking and avoids contamination (arXiv:2506.02515). That work covers general finance, such as interest, valuation, and accounting, and does not include life contingencies, does not locate and classify the first incorrect step, and does not study rewording stability or mitigation. We adopt the procedural, code-verified setup and apply it to a different domain and a different set of questions.
 
 A separate line of work studies error localization directly, asking a model or a judge to identify the first wrong step in a reasoning trace, and reports that even strong models find this hard. We use a simpler and fully objective route: because we compute the correct value of each anchor quantity, we can check the model's own stated values against ground truth without a second model in the loop.
 
 \section{Method}
 
 \subsection{Ground-truth engine}
-Mortality follows Makeham's law with the parameters of the Standard Ultimate Life Table (A = 0.00022, B = 2.7e-6, c = 1.124), starting at age 20 with 100{,}000 lives, at an annual effective interest rate of five percent unless a problem states otherwise. From this law we compute survival probabilities, whole-life and temporary annuities, insurances, net premiums, and reserves. We validate the engine before any model call: it reproduces the published annuity-due value at age 60 (14.9041), the published whole-life insurance value at age 60 (0.29028), the closed-form interest-theory factors, and the exact identity relating insurance and annuity values, all to at least four decimal places. If the engine were wrong, the study would be worthless, so this check is a hard precondition rather than an afterthought.
+Mortality follows Makeham's law with the parameters of the Standard Ultimate Life Table \citep{dickson2020alm}: $A = 0.00022$, $B = 2.7\times10^{-6}$, $c = 1.124$, starting at age 20 with 100{,}000 lives, at an annual effective interest rate of five percent unless a problem states otherwise. From this law we compute survival probabilities, whole-life and temporary annuities, insurances, net premiums, and reserves. We validate the engine before any model call: it reproduces the published annuity-due value at age 60 (14.9041), the published whole-life insurance value at age 60 (0.29028), the closed-form interest-theory factors, and the exact identity relating insurance and annuity values, all to at least four decimal places. If the engine were wrong, the study would be worthless, so this check is a hard precondition rather than an afterthought.
 
 \subsection{Problem families and generation}
 We use six families: level annuity-immediate, level annuity-due, accumulation of an annuity, pure endowment, term insurance, and temporary life annuity-due. Each problem is generated by drawing parameters at random from documented ranges (payment amounts, terms, ages, and interest rates), and any life-table values the model needs are written into the prompt as integers. The reference answer is computed from those same integers, so a correct method reproduces it exactly. Because the parameters are randomized on each draw, the exact problems are not present in any training corpus, which lets us read low accuracy as a reasoning failure rather than a gap in memorized facts.
@@ -114,5 +135,8 @@ Language models fail on actuarial calculations in a specific and legible way. Th
 
 \section*{Reproducibility statement}
 The mortality and interest engine, the problem generator, the evaluation harness, the statistics, and the figure scripts are released. The engine's validation checks run before any model call. Every number in this paper is produced by a script that reads \texttt{results/summaries/actuarial\_scaled.json} or \texttt{results/summaries/actuarial\_stats.json}; none is entered by hand. Model responses are cached by a hash of the request, and the exact model identifiers and access date are recorded above, so the results reproduce without new API calls.
+
+\bibliographystyle{tmlr}
+\bibliography{references}
 
 \end{document}
