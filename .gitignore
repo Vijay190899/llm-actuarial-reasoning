@@ -13,9 +13,6 @@ results/cache/
 results/raw/
 data/
 
-# Local harness config (kept out of the research repo)
-
-
 # OS and editor
 .DS_Store
 Thumbs.db
