@@ -25,7 +25,6 @@ Problems are procedurally generated with randomized parameters, so the exact ite
 - `experiments/actuarial_figures.py` renders the paper figures from the results.
 - `results/summaries/` machine-readable results. Every number reported traces back to one of these.
 - `paper/` the manuscript and figures.
-- `experiment_design.md` the study design and pre-registered criteria.
 
 ## Reproducibility
 
