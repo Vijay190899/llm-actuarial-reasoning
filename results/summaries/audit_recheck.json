@@ -1,0 +1,144 @@
+{
+ "source": "actuarial_scaled.json",
+ "no_answer_missing_cells": {
+  "gptoss120:base_v2": 2,
+  "gptoss120:scaffoldA_v0": 3,
+  "gptoss120:scaffoldB_v0": 9
+ },
+ "localization_per_model": {
+  "llama8b": {
+   "incorrect": 38,
+   "factor_step": 33,
+   "share_ci": [
+    0.868,
+    0.727,
+    0.942
+   ]
+  },
+  "deepseek": {
+   "incorrect": 4,
+   "factor_step": 2,
+   "share_ci": [
+    0.5,
+    0.15,
+    0.85
+   ]
+  },
+  "gemini": {
+   "incorrect": 5,
+   "factor_step": 5,
+   "share_ci": [
+    1.0,
+    0.566,
+    1.0
+   ]
+  },
+  "gptoss120": {
+   "incorrect": 9,
+   "factor_step": 6,
+   "share_ci": [
+    0.667,
+    0.354,
+    0.879
+   ]
+  },
+  "strong_pooled": {
+   "incorrect": 18,
+   "factor_step": 13,
+   "share_ci": [
+    0.722,
+    0.491,
+    0.875
+   ]
+  }
+ },
+ "mitigation_variants": {
+  "tol1pct_exclude": {
+   "scaffoldA_v0": {
+    "delta": 0.159,
+    "n_pairs": 189
+   },
+   "scaffoldB_v0": {
+    "delta": 0.262,
+    "n_pairs": 183
+   }
+  },
+  "tol1pct_as_incorrect": {
+   "scaffoldA_v0": {
+    "delta": 0.172,
+    "n_pairs": 192
+   },
+   "scaffoldB_v0": {
+    "delta": 0.286,
+    "n_pairs": 192
+   }
+  },
+  "tol2pct_exclude": {
+   "scaffoldA_v0": {
+    "delta": 0.164,
+    "n_pairs": 189
+   },
+   "scaffoldB_v0": {
+    "delta": 0.262,
+    "n_pairs": 183
+   }
+  },
+  "tol2pct_as_incorrect": {
+   "scaffoldA_v0": {
+    "delta": 0.177,
+    "n_pairs": 192
+   },
+   "scaffoldB_v0": {
+    "delta": 0.286,
+    "n_pairs": 192
+   }
+  },
+  "tol5pct_exclude": {
+   "scaffoldA_v0": {
+    "delta": 0.138,
+    "n_pairs": 189
+   },
+   "scaffoldB_v0": {
+    "delta": 0.251,
+    "n_pairs": 183
+   }
+  },
+  "tol5pct_as_incorrect": {
+   "scaffoldA_v0": {
+    "delta": 0.151,
+    "n_pairs": 192
+   },
+   "scaffoldB_v0": {
+    "delta": 0.276,
+    "n_pairs": 192
+   }
+  }
+ },
+ "near_miss_bands": {
+  "base_v0": {
+   "incorrect": 56,
+   "over5pct": 50,
+   "1to2pct": 3,
+   "2to5pct": 3
+  },
+  "scaffoldA_v0": {
+   "incorrect": 86,
+   "over5pct": 76,
+   "1to2pct": 2,
+   "2to5pct": 8
+  },
+  "scaffoldB_v0": {
+   "incorrect": 102,
+   "over5pct": 94,
+   "2to5pct": 5,
+   "1to2pct": 3
+  }
+ },
+ "consistency_counts": {
+  "cells": 190,
+  "agree": 109,
+  "agree_and_correct": 109,
+  "agree_and_wrong": 0
+ },
+ "audit_sample_note": "localization_audit.json holds 24 stored cases, all llama8b; strong-model flags are not hand-validated (n=18 pool)."
+}
